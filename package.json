@@ -28,8 +28,11 @@
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
+    "build": "npx tsc",
+    "postbuild": "npm run migration:prod",
+    "start": "node ./dist/server.js",
     "migration:run": "ts-node --transpile-only node_modules/typeorm/cli.js migration:run",
+    "migration:prod": "NODE_ENV=production npx typeorm migration:run",
     "migration:revert": "ts-node --transpile-only node_modules/typeorm/cli.js migration:revert"
   }
 }

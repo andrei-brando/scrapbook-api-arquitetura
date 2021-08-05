@@ -21,6 +21,16 @@ class UserRepository {
     return user;
   }
 
+  async getOneByEmail(email: string): Promise<User | null> {
+    const user = await UserEntity.findOne({
+      where: { email }
+    });
+
+    if (!user) return null;
+
+    return user;
+  }
+
   async getAll(): Promise<User[] | null> {
     const users = await UserEntity.find();
 

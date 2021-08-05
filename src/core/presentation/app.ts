@@ -49,7 +49,7 @@ export default class App {
 
   public start(port: number) {
     this.#express.listen(port, () => {
-      console.log('API rodando...');
+      console.log(`API rodando... porta ${port}`);
     });
   }
 }

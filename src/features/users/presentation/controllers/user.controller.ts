@@ -1,5 +1,5 @@
 import { CacheRepository } from "../../../notes/infra";
-import { HttpRequest, HttpResponse, MVCController, notFound, ok, serverError } from "../../../notes/presentation";
+import { badRequest, HttpRequest, HttpResponse, MVCController, notFound, ok, serverError, UserAlreadyExistsError } from "../../../notes/presentation";
 import { UserRepository } from "../../infra";
 
 export class UserController implements MVCController {
@@ -50,9 +50,18 @@ export class UserController implements MVCController {
   }
 
   async store(request: HttpRequest): Promise<HttpResponse> {
+    const { email } = request.body;
+
     try {
+      const userAlreadyExists = await this.#repository.getOneByEmail(email)
+
+      if (userAlreadyExists) return badRequest(new UserAlreadyExistsError());
+
       const user = await this.#repository.create(request.body);
-      return ok(user);
+      return ok({
+        message: 'User Created',
+        user
+      });
     } catch (error) {
       return serverError();
     }

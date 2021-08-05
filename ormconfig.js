@@ -1,25 +1,26 @@
 require('dotenv').config();
 
+const rootPath = process.env.NODE_ENV?.toLocaleLowerCase() === 'production'
+  ? 'dist'
+  : 'src';
+
+console.log(rootPath);
+
 module.exports = {
   type: process.env.DIALECT,
-  // host: process.env.DB_HOST,
-  port: process.env.PORT,
+  // port: process.env.PORT,
   url: process.env.DATABASE_URL,
-  // username: process.env.DB_USER,
-  // password: process.env.DB_PASSWORD,
-  // database: process.env.DB_DATABASE,
   synchronize: false,
   logging: false,
   entities: [
-    'src/core/infra/data/database/entities/**/*'
-    // 'src/core/infra/data/database/entities/*'
+    `${rootPath}/core/infra/data/database/entities/**/*`
   ],
   migrations: [
-    'src/core/infra/data/database/migrations/**/*'
+    `${rootPath}/core/infra/data/database/migrations/**/*`,
   ],
   cli: {
-    entitiesDir: 'src/core/infra/data/database/entities',
-    migrationsDir: 'src/core/infra/data/database/migrations'
+    entitiesDir: `${rootPath}/core/infra/data/database/entities`,
+    migrationsDir: `${rootPath}/core/infra/data/database/migrations`,
   },
   extra: {
     ssl: {
