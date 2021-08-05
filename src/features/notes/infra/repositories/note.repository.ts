@@ -14,8 +14,9 @@ export class NoteRepository {
     return Object.assign({}, params, note);
   }
 
-  async getAll(): Promise<Note[]> {
+  async getAll(userUid: string): Promise<Note[]> {
     const notes = await NoteEntity.find({
+      where: { userUid },
       relations: ['user']
     });
 

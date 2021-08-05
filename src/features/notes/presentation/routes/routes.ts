@@ -14,7 +14,7 @@ const makeController = (): MVCController => {
 
 export default class NotesRoutes {
   public init(routes: Router) {
-    routes.get('/notes',
+    routes.get('/notes/:userUid',
       routerMvcAdapter(makeController(), EMVC.INDEX));
 
     routes.get('/notes/:uid',

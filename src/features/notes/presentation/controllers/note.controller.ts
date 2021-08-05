@@ -13,15 +13,21 @@ export class ProjectController implements MVCController {
   }
 
   public async index(request: HttpRequest): Promise<HttpResponse> {
+    const { userUid } = request.params;
     try {
-      const cache = await this.#cache.get('note:all');
+      const cache = await this.#cache.get(`note:${userUid}:all`);
 
       if (cache) {
         return ok(cache);
       }
 
-      const notes = await this.#repository.getAll();
-      await this.#cache.set('note:all', notes);
+      const notes = await this.#repository.getAll(userUid);
+
+      if (notes.length <= 0) {
+        return notFound();
+      }
+
+      await this.#cache.set(`note:${userUid}:all`, notes);
 
       return ok(notes);
     } catch (error) {
@@ -55,10 +61,6 @@ export class ProjectController implements MVCController {
 
   public async store(request: HttpRequest): Promise<HttpResponse> {
     try {
-
-      console.log('aqui no store');
-
-
       const note = await this.#repository.create(request.body);
       return ok(note);
     } catch (error) {
@@ -74,7 +76,9 @@ export class ProjectController implements MVCController {
     try {
       const result = await this.#repository.update(uid, request.body);
 
-      await this.#cache.set(`projects:${uid}`, result);
+      //TODO tem que fazer um esquema aqui para setar o novo cache
+
+      await this.#cache.set(`note:${uid}`, result);
 
       return ok(result);
     } catch (error) {
