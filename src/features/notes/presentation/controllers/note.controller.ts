@@ -15,19 +15,10 @@ export class ProjectController implements MVCController {
   public async index(request: HttpRequest): Promise<HttpResponse> {
     const { userUid } = request.params;
     try {
-      const cache = await this.#cache.get(`note:${userUid}:all`);
-
-      if (cache) {
-        return ok(cache);
-      }
-
+      // removi as questões de cache para a rota de todos os recados pois estava bugando MUITO
       const notes = await this.#repository.getAll(userUid);
 
-      if (notes.length <= 0) {
-        return notFound();
-      }
-
-      await this.#cache.set(`note:${userUid}:all`, notes);
+      if (notes.length <= 0) return notFound();
 
       return ok(notes);
     } catch (error) {
@@ -36,20 +27,15 @@ export class ProjectController implements MVCController {
   }
 
   public async show(request: HttpRequest): Promise<HttpResponse> {
+    const { uid } = request.params;
     try {
-      const { uid } = request.params;
-
       const cache = await this.#cache.get(`note:${uid}`);
 
-      if (cache) {
-        return ok(cache);
-      }
+      if (cache) return ok(cache);
 
       const note = await this.#repository.getOne(uid);
 
-      if (!note) {
-        return notFound();
-      }
+      if (!note) return notFound();
 
       await this.#cache.set(`note:${uid}`, note);
 
@@ -62,6 +48,7 @@ export class ProjectController implements MVCController {
   public async store(request: HttpRequest): Promise<HttpResponse> {
     try {
       const note = await this.#repository.create(request.body);
+
       return ok(note);
     } catch (error) {
       console.log(error);
@@ -74,13 +61,10 @@ export class ProjectController implements MVCController {
     const { uid } = request.params;
 
     try {
-      const result = await this.#repository.update(uid, request.body);
+      await this.#repository.update(uid, request.body);
+      await this.#cache.delete(`note:${uid}`);
 
-      //TODO tem que fazer um esquema aqui para setar o novo cache
-
-      await this.#cache.set(`note:${uid}`, result);
-
-      return ok(result);
+      return ok(null);
     } catch (error) {
       return serverError();
     }
@@ -91,6 +75,7 @@ export class ProjectController implements MVCController {
 
     try {
       await this.#repository.delete(uid);
+
       await this.#cache.delete(`note:${uid}`);
 
       return ok(null);

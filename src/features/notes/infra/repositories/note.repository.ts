@@ -34,9 +34,7 @@ export class NoteRepository {
   async getOne(uid: string): Promise<Note | null> {
     const note = await NoteEntity.findOne(uid);
 
-    if (!note) {
-      return null
-    }
+    if (!note) return null;
 
     return {
       uid: note.uid,
