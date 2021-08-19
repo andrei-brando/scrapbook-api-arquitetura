@@ -28,6 +28,7 @@
     "ioredis": "^4.27.6",
     "pg": "^8.6.0",
     "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.0.2",
     "ts-jest": "^27.0.5",
     "typeorm": "^0.2.34",
     "uuid": "^8.3.2",
