@@ -48,6 +48,7 @@
     "test:verbose": "yarn test:setup && cross-env NODE_ENV=test yarn jest --passWithNoTests --runInBand",
     "test:unit": "yarn test --watchAll -c jest-unit.config.js",
     "test:integration": "yarn test --watchAll -c jest-integration.config.js",
-    "test:coverage": "yarn test --coverage"
+    "test:coverage": "yarn test --coverage",
+    "test:no-migration:coverage": "yarn jest -i --coverage"
   }
 }
