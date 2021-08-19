@@ -1,6 +1,7 @@
 import { HttpRequest, HttpResponse } from '../../../../core/presentation';
 import { notFound, ok, serverError } from '../../../../core/presentation';
 import { MVCController } from '../../../../core/presentation';
+import { Note } from '../../domain/models';
 import { CacheRepository, NoteRepository } from '../../infra';
 
 export class ProjectController implements MVCController {
@@ -15,10 +16,15 @@ export class ProjectController implements MVCController {
   public async index(request: HttpRequest): Promise<HttpResponse> {
     const { userUid } = request.params;
     try {
-      // removi as questões de cache para a rota de todos os recados pois estava bugando MUITO
+      const cache = await this.#cache.get(`notes:all:user:${userUid}`);
+
+      if (cache) return ok(cache);
+
       const notes = await this.#repository.getAll(userUid);
 
-      if (notes.length <= 0) return notFound();
+      if (!notes || notes.length <= 0) return notFound();
+
+      await this.#cache.set(`notes:all:user:${userUid}`, notes);
 
       return ok(notes);
     } catch (error) {
@@ -29,7 +35,7 @@ export class ProjectController implements MVCController {
   public async show(request: HttpRequest): Promise<HttpResponse> {
     const { uid } = request.params;
     try {
-      const cache = await this.#cache.get(`note:${uid}`);
+      const cache = await this.#cache.get(`notes:${uid}`);
 
       if (cache) return ok(cache);
 
@@ -37,7 +43,7 @@ export class ProjectController implements MVCController {
 
       if (!note) return notFound();
 
-      await this.#cache.set(`note:${uid}`, note);
+      await this.#cache.set(`notes:${uid}`, note);
 
       return ok(note);
     } catch (error) {
@@ -49,10 +55,10 @@ export class ProjectController implements MVCController {
     try {
       const note = await this.#repository.create(request.body);
 
+      await this.#cache.delete(`notes:all:user:${note.userUid}`);
+
       return ok(note);
     } catch (error) {
-      console.log(error);
-
       return serverError();
     }
   }
@@ -61,8 +67,14 @@ export class ProjectController implements MVCController {
     const { uid } = request.params;
 
     try {
+      const note = await this.#repository.getOne(uid);
+
+      if (!note) return notFound();
+
       await this.#repository.update(uid, request.body);
-      await this.#cache.delete(`note:${uid}`);
+
+      await this.#cache.delete(`notes:${uid}`);
+      await this.#cache.delete(`notes:all:user:${note.userUid}`);
 
       return ok(null);
     } catch (error) {
@@ -74,9 +86,13 @@ export class ProjectController implements MVCController {
     const { uid } = request.params;
 
     try {
-      await this.#repository.delete(uid);
+      const note = await this.#repository.getOne(uid);
 
-      await this.#cache.delete(`note:${uid}`);
+      if (!note) return notFound();
+
+      await this.#repository.delete(uid);
+      await this.#cache.delete(`notes:${uid}`);
+      await this.#cache.delete(`notes:all:user:${note.userUid}`);
 
       return ok(null);
     } catch (error) {

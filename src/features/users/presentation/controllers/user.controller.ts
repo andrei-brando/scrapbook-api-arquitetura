@@ -12,41 +12,43 @@ export class UserController implements MVCController {
   }
 
   async index(request: HttpRequest): Promise<HttpResponse> {
-    try {
-      const cache = await this.#cache.get(`user:all`);
+    throw new Error("Method not implemented.");
+    // try {
+    //   const cache = await this.#cache.get(`user:all`);
 
-      if (cache) return ok(cache);
+    //   if (cache) return ok(cache);
 
-      const users = await this.#repository.getAll();
+    //   const users = await this.#repository.getAll();
 
-      if (!users) return notFound();
+    //   if (!users) return notFound();
 
-      await this.#cache.set(`user:all`, users);
+    //   await this.#cache.set(`user:all`, users);
 
-      return ok(users);
-    } catch (error) {
-      return serverError();
-    }
+    //   return ok(users);
+    // } catch (error) {
+    //   return serverError();
+    // }
   }
 
   async show(request: HttpRequest): Promise<HttpResponse> {
-    const { uid } = request.params;
+    throw new Error("Method not implemented.");
+    // const { uid } = request.params;
 
-    try {
-      const cache = await this.#cache.get(`user:${uid}`);
+    // try {
+    //   const cache = await this.#cache.get(`user:${uid}`);
 
-      if (cache) return ok(cache);
+    //   if (cache) return ok(cache);
 
-      const user = await this.#repository.getOne(uid);
+    //   const user = await this.#repository.getOne(uid);
 
-      if (!user) return notFound();
+    //   if (!user) return notFound();
 
-      await this.#cache.set(`user:${uid}`, user);
+    //   await this.#cache.set(`user:${uid}`, user);
 
-      return ok(user);
-    } catch (error) {
-      return serverError();
-    }
+    //   return ok(user);
+    // } catch (error) {
+    //   return serverError();
+    // }
   }
 
   async store(request: HttpRequest): Promise<HttpResponse> {
@@ -58,6 +60,7 @@ export class UserController implements MVCController {
       if (userAlreadyExists) return badRequest(new UserAlreadyExistsError());
 
       const user = await this.#repository.create(request.body);
+
       return ok({
         message: 'User Created',
         user
