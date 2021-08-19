@@ -5,6 +5,6 @@ export interface Note {
   description: string;
   details?: string;
   userUid: string;
-  user: User;
+  user?: User;
 }
 

@@ -4,7 +4,7 @@ import { MVCController } from '../../../../core/presentation';
 import { Note } from '../../domain/models';
 import { CacheRepository, NoteRepository } from '../../infra';
 
-export class ProjectController implements MVCController {
+export class NoteController implements MVCController {
   readonly #repository: NoteRepository;
   readonly #cache: CacheRepository;
 

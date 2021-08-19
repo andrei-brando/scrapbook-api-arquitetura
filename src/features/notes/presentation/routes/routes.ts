@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { EMVC } from '../../../../core/presentation';
 import { middlewareAdapter, routerMvcAdapter } from '../../../../core/presentation';
-import { ProjectController } from '../controllers';
+import { NoteController } from '../controllers';
 import { MVCController } from '../../../../core/presentation';
 import { CacheRepository, NoteRepository } from '../../infra';
 import { NoteMiddleware } from '../middlewares';
@@ -9,7 +9,7 @@ import { NoteMiddleware } from '../middlewares';
 const makeController = (): MVCController => {
   const repository = new NoteRepository();
   const cache = new CacheRepository();
-  return new ProjectController(repository, cache);
+  return new NoteController(repository, cache);
 };
 
 export default class NotesRoutes {
