@@ -1,5 +1,5 @@
-import { CacheRepository } from "../../../notes/infra";
-import { HttpRequest, HttpResponse, MVCController, notFound, ok, serverError } from "../../../notes/presentation";
+import { CacheRepository } from '../../../../../src/core/infra';
+import { HttpRequest, HttpResponse, MVCController, notFound, ok, serverError } from '../../../../../src/core/presentation';
 import { AuthRepository } from "../../infra";
 
 export class AuthController implements MVCController {

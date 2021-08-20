@@ -29,7 +29,7 @@ export class UserEntity extends BaseEntity {
   updatedAt!: Date;
 
   @OneToMany(_ => NoteEntity, note => note.user)
-  notes!: NoteEntity[];
+  notes?: NoteEntity[];
 
   @BeforeInsert()
   private beforeInsert() {

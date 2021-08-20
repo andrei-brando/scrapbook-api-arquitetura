@@ -1,6 +1,5 @@
-import { CacheRepository } from "../../../notes/infra";
-import { badRequest, HttpRequest, HttpResponse, MVCController, notFound, ok, serverError, UserAlreadyExistsError } from "../../../notes/presentation";
-import { UserRepository } from "../../infra";
+import { badRequest, HttpRequest, HttpResponse, MVCController, ok, serverError, UserAlreadyExistsError } from "../../../../core/presentation";
+import { CacheRepository, UserRepository } from "../../infra";
 
 export class UserController implements MVCController {
   readonly #repository: UserRepository;
@@ -13,42 +12,10 @@ export class UserController implements MVCController {
 
   async index(request: HttpRequest): Promise<HttpResponse> {
     throw new Error("Method not implemented.");
-    // try {
-    //   const cache = await this.#cache.get(`user:all`);
-
-    //   if (cache) return ok(cache);
-
-    //   const users = await this.#repository.getAll();
-
-    //   if (!users) return notFound();
-
-    //   await this.#cache.set(`user:all`, users);
-
-    //   return ok(users);
-    // } catch (error) {
-    //   return serverError();
-    // }
   }
 
   async show(request: HttpRequest): Promise<HttpResponse> {
     throw new Error("Method not implemented.");
-    // const { uid } = request.params;
-
-    // try {
-    //   const cache = await this.#cache.get(`user:${uid}`);
-
-    //   if (cache) return ok(cache);
-
-    //   const user = await this.#repository.getOne(uid);
-
-    //   if (!user) return notFound();
-
-    //   await this.#cache.set(`user:${uid}`, user);
-
-    //   return ok(user);
-    // } catch (error) {
-    //   return serverError();
-    // }
   }
 
   async store(request: HttpRequest): Promise<HttpResponse> {
@@ -61,10 +28,7 @@ export class UserController implements MVCController {
 
       const user = await this.#repository.create(request.body);
 
-      return ok({
-        message: 'User Created',
-        user
-      });
+      return ok(user);
     } catch (error) {
       return serverError();
     }
